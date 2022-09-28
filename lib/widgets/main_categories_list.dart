@@ -3,6 +3,8 @@ import 'package:flutter_shimmer/flutter_shimmer.dart';
 import 'package:stellar_track/Screens/subcategory_screen.dart';
 import 'package:stellar_track/widgets/loader.dart';
 
+import '../Screens/subcategory_screen1.dart';
+
 class MainCategoriesList extends StatefulWidget {
   const MainCategoriesList({required this.data, Key? key}) : super(key: key);
   final dynamic data;
@@ -32,7 +34,7 @@ class _MainCategoriesListState extends State<MainCategoriesList> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => SubcategoriesScreen(
+                            builder: (context) => SubcategoriesScreen1(
                                 categoryId: widget.data["data"][index]["id"]
                                     .toString()),
                           ),

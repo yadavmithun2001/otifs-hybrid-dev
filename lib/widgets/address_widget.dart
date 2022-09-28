@@ -1,14 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:stellar_track/api_calls.dart';
 
 import '../controllers.dart';
 
-class AddressWidget extends StatelessWidget {
+class AddressWidget extends StatefulWidget {
   const AddressWidget({Key? key}) : super(key: key);
 
   @override
+  State<AddressWidget> createState() => _AddressWidgetState();
+}
+
+class _AddressWidgetState extends State<AddressWidget> {
+  Controller c = Get.put(Controller());
+  dynamic data;
+  @override
+  void initState() {
+    // TODO: implement initState
+    if(c.addressID.value.toString() == ""){
+      listdefaultaddress(c.refUserId.value,c.addressID.value).then((value) {
+        data = value;
+        c.addressType.value = data['data'][0]["address_type"].toString();
+      });
+    }
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final Controller c = Get.put(Controller());
+
     var wd = MediaQuery.of(context).size.width;
     var ht = MediaQuery.of(context).size.height;
 

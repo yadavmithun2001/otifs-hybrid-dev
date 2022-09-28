@@ -219,14 +219,14 @@ Future getAllServices() async {
 Future selectExistingAddress(c,dynamic data,int index, setState) async {
   setState(() {
     c.addressID.value = data['data'][index]['address_id'].toString();
-
+    c.address["address_type"] = data['data'][index]["address_type"];
     c.address["Address"] = data["data"][index]['address1'];
     c.address["City"] = data['data'][index]['city_name'];
     c.address["State"] = data['data'][index]['state_name'];
     c.address["Postal_code"] = data['data'][index]['pincode'];
     c.coordinates["lat"] = data['data'][index]['latitude'];
     c.coordinates["lng"] = data['data'][index]['longitude'];
-    c.addressType.value = data['data'][index]["address_type"];
+
   });
   return true;
 }

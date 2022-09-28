@@ -51,7 +51,9 @@ class _AddToCartButtonState extends State<AddToCartButton> {
           });
           Get.close(1);
         });
-        await bottomSheet(context, value["data"][0], slots, isCart: true);
+        await bottomSheet(context, value["data"][0], slots,
+          isCart: true,
+        );
         widget.function();
       },
       child: Text(

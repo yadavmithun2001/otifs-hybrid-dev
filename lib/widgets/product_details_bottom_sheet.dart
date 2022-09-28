@@ -21,7 +21,7 @@ import 'date_slot_selection.dart';
 import 'time_slot_selection.dart';
 import 'trigger_signin.dart';
 
-Future bottomSheet(context, data, slots, {bool? isCart}) {
+Future bottomSheet(context, data, slots, {bool? isCart,isBoth}) {
   final Controller c = Get.put(Controller());
   var wd = MediaQuery.of(context).size.width;
   var ht = MediaQuery.of(context).size.height;
@@ -37,6 +37,7 @@ Future bottomSheet(context, data, slots, {bool? isCart}) {
           data: data,
           slots: slots,
           isCart: isCart,
+          isBoth: isBoth
         );
       }).whenComplete(() {
     c.sqft.value = '';

@@ -4,6 +4,7 @@ import 'package:stellar_track/api_calls.dart';
 import 'package:stellar_track/widgets/shimmer_loader.dart';
 
 import '../controllers.dart';
+import '../main.dart';
 import '../widgets/carousel.dart';
 import '../widgets/notification_list_tile.dart';
 import 'Main Screens/home_page.dart';
@@ -100,11 +101,19 @@ class _NotificationsState extends State<Notifications> {
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.all(18.0),
-                                    child: Image.asset(
-                                      "assets/icons/icons_png/004-headphones.png",
-                                      color: const Color(0xff38456C),
-                                      width: wd / 10,
-                                      height: 20,
+                                    child: GestureDetector(
+                                      onTap: (){
+                                        c.screenIndex.value = 1;
+                                        Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen()
+                                        )
+                                        );
+                                      },
+                                      child: Image.asset(
+                                        "assets/icons/icons_png/004-headphones.png",
+                                        color: const Color(0xff38456C),
+                                        width: wd / 10,
+                                        height: 20,
+                                      ),
                                     ),
                                   ),
                                 ],
@@ -115,7 +124,7 @@ class _NotificationsState extends State<Notifications> {
                               child: ListView.builder(
                                   padding: const EdgeInsets.symmetric(
                                       vertical: 20, horizontal: 10),
-                                  itemCount: 3,
+                                  itemCount: data["data"].length,
                                   shrinkWrap: true,
                                   itemBuilder: (context, index) {
                                     return NotificationListItem(

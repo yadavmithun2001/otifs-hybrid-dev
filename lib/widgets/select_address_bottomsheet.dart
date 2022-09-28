@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:stellar_track/Screens/add_address_screen.dart';
 import 'package:stellar_track/api_calls.dart';
 import 'package:stellar_track/functions.dart';
 import 'package:stellar_track/widgets/service_button.dart';
@@ -18,9 +19,18 @@ class SelectAddressBottomSheet extends StatefulWidget {
 }
 
 class SelectAddressBottomSheetState extends State<SelectAddressBottomSheet> {
+  Controller c = Get.put(Controller());
+
+  @override
+  void initState() {
+    // TODO: implement initState
+
+    super.initState();
+  }
+
+
   @override
   Widget build(BuildContext context) {
-    final Controller c = Get.put(Controller());
     var wd = MediaQuery.of(context).size.width;
     var ht = MediaQuery.of(context).size.height;
     return BottomSheet(
@@ -54,7 +64,7 @@ class SelectAddressBottomSheetState extends State<SelectAddressBottomSheet> {
                     ),
                     const Expanded(
                       child: Padding(
-                        padding: EdgeInsets.only(right: 8.0),
+                        padding: EdgeInsets.only(left: 8.0),
                         child: Align(
                           alignment: Alignment.center,
                           child: Text(
@@ -69,6 +79,13 @@ class SelectAddressBottomSheetState extends State<SelectAddressBottomSheet> {
                     )
                   ],
                 ),
+                widget.data["status"].toString() == "failure" ?
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 30, 0, 50),
+                      child: Container(
+                        child: Text('No address found, Kindly add a new Address'),
+                      ),
+                    ) :
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: SizedBox(
@@ -86,12 +103,17 @@ class SelectAddressBottomSheetState extends State<SelectAddressBottomSheet> {
                                 () {
                                   print(
                                       widget.data['data'][index]["address_id"]);
+                                  c.addressType.value = widget.data['data'][index]["address_type"].toString();
+
+                                  print(c.addressType.value.toString());
                                   selectExistingAddress(
                                           c, widget.data, index, setState)
                                       .then((value) => setDefaultAddressId(
                                           c.refUserId,
                                           widget.data['data'][index]
-                                              ["address_id"]));
+                                              ["address_id"]
+                                     )
+                                  );
                                   // c.addressID.value = widget.data['data'][index]
                                   //         ['address_id']
                                   //     .toString();
@@ -132,7 +154,11 @@ class SelectAddressBottomSheetState extends State<SelectAddressBottomSheet> {
                 ),
                 ServiceButton(
                   onTap: () {
-                    Get.dialog(AddNewAddress());
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                            const AddAddress()));
                   },
                   buttonText: "ADD",
                   height: ht / 16,

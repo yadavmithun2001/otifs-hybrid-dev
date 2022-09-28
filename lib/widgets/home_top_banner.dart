@@ -27,7 +27,7 @@ class HomeBanner extends StatelessWidget {
                       child: ProfilePageShimmer(),
                     );
                   },
-                  fit: BoxFit.fill,
+                  fit: BoxFit.contain,
                 ),
               );
             }),

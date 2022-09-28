@@ -27,7 +27,7 @@ class _ServiceButtonState extends State<ServiceButton> {
     var wd = MediaQuery.of(context).size.width;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 30.0),
+      padding: const EdgeInsets.symmetric(horizontal: 0.0),
       child: SizedBox(
         width: widget.width ?? wd / 1.25,
         height: widget.height ?? 50,

@@ -145,7 +145,7 @@ class _HomePageState extends State<HomePage> {
                 height: ht,
                 child: SingleChildScrollView(
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    padding: const EdgeInsets.symmetric(vertical: 0.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -153,7 +153,7 @@ class _HomePageState extends State<HomePage> {
                         HomeBanner(data: banners),
                         const Padding(
                           padding: EdgeInsets.only(
-                              left: 8.0, right: 8.0, top: 30, bottom: 10),
+                              left: 8.0, right: 8.0, top: 10, bottom: 10),
                           child: Text(
                             "What services you need?",
                             style: TextStyle(

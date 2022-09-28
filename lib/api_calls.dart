@@ -60,6 +60,9 @@ Future getProductDetails(prodID) async {
   }
   return res;
 }
+
+
+
 //Fetches unit deatails
 Future getUnitDetails(prodID,unit_name) async {
   var request = http.Request('GET',
@@ -362,6 +365,22 @@ Future listUserAddresses(refUserId, addressID) async {
   return res;
 }
 
+Future listdefaultaddress(refUserId, addressID) async {
+  var request = http.Request(
+      'GET',
+      Uri.parse('$apiHeader/api/hybrid/auth/profile/address/lists?ref_user_id=$refUserId&address_id=$addressID&default_address=1'));
+
+  http.StreamedResponse response = await request.send();
+  var res = jsonDecode(await response.stream.bytesToString());
+  if (response.statusCode == 200) {
+    print(res);
+  } else {
+    print(response.reasonPhrase);
+  }
+  return res;
+}
+
+
 Future getNotificationScreenData(refUserId) async {
   var request = http.Request(
       'GET',
@@ -385,9 +404,7 @@ Future addItemToCart(refUserId, prodId, unitId,
       'POST',
       Uri.parse(
           // '$apiHeader/api/hybrid/cart/store?ref_user_id=$refUserId&product_id=$prodId&unit_id=$unitId&quantity=$qty&from_date=$date&to_date=$date&from_time=$fromTime&to_time=$toTime'
-          qty == '' || date == '' || fromTime == ""
-              ? '$apiHeader/api/hybrid/cart/store?ref_user_id=$refUserId&product_id=$prodId&unit_id=$unitId'
-              : '$apiHeader/api/hybrid/cart/store?ref_user_id=$refUserId&product_id=$prodId&unit_id=$unitId&quantity=$qty&from_date=$date&to_date=$date&from_time=$fromTime&to_time=$fromTime'
+          '$apiHeader/api/hybrid/cart/store?ref_user_id=$refUserId&product_id=$prodId&unit_id=$unitId&quantity=$qty&from_date=$date&to_date=$date&from_time=$fromTime&to_time=$toTime'
           // qty != ""
           //     ? '$apiHeader/api/hybrid/cart/store?ref_user_id=$refUserId&product_id=$prodId&unit_id=$unitId&quantity=$qty'
           //     : date != '' || fromTime != ''
@@ -400,7 +417,6 @@ Future addItemToCart(refUserId, prodId, unitId,
   print("Service Date" + date!);
   print(res);
   if (response.statusCode == 200) {
-    c.cartCount.value = c.cartCount.value + 1;
     Get.snackbar('Service Added', 'Check cart to schedule the service');
   } else {
     print(response.reasonPhrase);

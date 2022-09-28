@@ -63,10 +63,10 @@ class _AddUnitsValueState extends State<AddUnitsValue> {
                         fontWeight: FontWeight.bold,
                         fontSize: 14),
                    ),
-                   new DropdownButton<String>(
+                    DropdownButton<String>(
                      value: _selected ,
                      iconSize: 30,
-                     style: TextStyle(
+                     style: const TextStyle(
                        color: Colors.black54,
                        fontSize: 16,
                      ),
@@ -76,9 +76,9 @@ class _AddUnitsValueState extends State<AddUnitsValue> {
                          _selected = newValue!;
                        });
                      },
-                     items: _stateList?.map((item) {
-                       return new DropdownMenuItem(
-                         child: new Text(item['dispval'].toString()),
+                     items: _stateList.map((item) {
+                       return DropdownMenuItem(
+                         child: Text(item['dispval'].toString()),
                          value: item['dispval'].toString(),
                          onTap: (){
                            setState(() {

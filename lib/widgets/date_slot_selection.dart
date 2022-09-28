@@ -24,7 +24,19 @@ class _DateSlotSelectionState extends State<DateSlotSelection> {
     c.dateSelected.value = (DateTime.parse(c.date.value)
         .add(Duration(days: 0))
         .toString()
-        .split('-')[0].split(' ').first);
+        .split('-')[0] +
+        '-' +
+        DateTime.parse(c.date.value)
+            .add(Duration(days: 0))
+            .toString()
+            .split('-')[1] +
+        '-' +
+        DateTime.parse(c.date.value)
+            .add(Duration(days: 0))
+            .toString()
+            .split('-')[2]
+            .split(' ')
+            .first);
     super.initState();
   }
 
@@ -35,7 +47,7 @@ class _DateSlotSelectionState extends State<DateSlotSelection> {
       child: ListView.builder(
           scrollDirection: Axis.horizontal,
           shrinkWrap: true,
-          itemCount: 3,
+          itemCount: 4,
           // itemExtent: 40,
           itemBuilder: (context, index) {
             

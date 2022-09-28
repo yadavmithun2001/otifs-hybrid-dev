@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:stellar_track/widgets/loader.dart';
 
 import '../api_calls.dart';
@@ -14,35 +15,43 @@ class CheckoutPage extends StatefulWidget {
       {required this.data,
       required this.isCart,
       required this.isBottomNav,
-      Key? key})
+      Key? key, required this.unit_values_id, required this.total_amount})
       : super(key: key);
 
   @override
   State<CheckoutPage> createState() => _CheckoutPageState();
   final dynamic data;
+  final int unit_values_id;
   final bool isCart;
   final bool isBottomNav;
+  final String total_amount;
 }
 
 class _CheckoutPageState extends State<CheckoutPage> {
-  @override
-  void initState() {
-    super.initState();
-    setState(() {
-      email = c.email.value;
-    });
-  }
-
-  String email = "";
   String selectedPaymentMode = 'Cash on Delivery';
   String paymentModeCode = 'cash';
+  String email = "";
+  String phone = "";
 
   int? currentModeSelected = 0;
   final Controller c = Get.put(Controller());
-  late TextEditingController emailController =
-      TextEditingController(text: email);
-  late TextEditingController phoneController =
-      TextEditingController(text: c.mobile.value);
+  TextEditingController emailController = TextEditingController(text: "email");
+  TextEditingController phoneController = TextEditingController(text: "phone");
+  @override
+  void initState() {
+    getProfileDetails(c.refUserId.value).then((value) {
+      setState(() {
+        c.email.value = value["data"][0]["email"].toString();
+        c.mobile.value = value["data"][0]["mobile"].toString();
+        emailController.text = value["data"][0]["email"].toString();
+        phoneController.text = value["data"][0]["mobile"].toString();
+      });
+    });
+    super.initState();
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
     var wd = MediaQuery.of(context).size.width;
@@ -74,9 +83,17 @@ class _CheckoutPageState extends State<CheckoutPage> {
         actions: [
           Padding(
             padding: EdgeInsets.symmetric(horizontal: wd / 6.0),
-            child: Image.asset(
-              "assets/AppBarCall.png",
-              width: 20,
+            child: GestureDetector(
+              onTap: (){
+                c.screenIndex.value = 1;
+                Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen()
+                )
+                );
+              },
+              child: Image.asset(
+                "assets/AppBarCall.png",
+                width: 20,
+              ),
             ),
           ),
         ],
@@ -87,7 +104,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
         child: Column(
           children: [
             SizedBox(
-              height: ht / 1.3,
+              height: ht / 1.4,
               child: SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
                 child: Column(
@@ -125,22 +142,24 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                             CrossAxisAlignment.end,
                                         children: [
                                           Text(
-                                            "₹${widget.data["price"].toString()}",
+                                            "₹"+widget.total_amount,
                                             style: const TextStyle(
-                                                fontSize: 12,
-                                                color: Color(0xff38456C),
-                                                fontWeight: FontWeight.normal),
-                                          ),
-                                          const Text(
-                                            "Per service",
-                                            style: TextStyle(
-                                                fontSize: 10,
+                                                fontSize: 16,
                                                 color: Color(0xff38456C),
                                                 fontWeight: FontWeight.bold),
                                           ),
+
                                           Text(
                                             // "10 May, 9 AM",
-                                            '${c.dateSelected.value} ${monthMap[c.month.value]},${c.timeSlot.value}',
+                                            '${DateTime.parse(c.dateSelected.value).add(Duration(days: 0))
+                                                .toString().split('-')[2]
+                                                .split(' ')
+                                                .first
+                                            } ${monthMap[
+                                            DateTime.parse(c.dateSelected.value)
+                                                .toString().split('-')[1].toString()
+                                            ]},'
+                                                '${c.timeSlot.value}',
                                             style: const TextStyle(
                                                 fontSize: 16,
                                                 color: Color(0xff1FD0C2),
@@ -153,7 +172,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                       ],
                     ),
                     //Referal or Coupon code ROW
-                    Padding(
+                    /*Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
                       child: Card(
                         shadowColor: const Color(0xff000029),
@@ -190,58 +209,61 @@ class _CheckoutPageState extends State<CheckoutPage> {
                           ),
                         ),
                       ),
-                    ),
+                    )*/
                     //Product Details
                     widget.isCart == false
-                        ? Container(
-                            height: ht / 8,
-                            width: wd,
-                            color: const Color(0xffF7F7F7),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Card(
-                                  shape: const CircleBorder(),
-                                  elevation: 10,
-                                  child: Container(
-                                    clipBehavior: Clip.hardEdge,
-                                    decoration: const BoxDecoration(
-                                        shape: BoxShape.circle),
-                                    width: ht / 10,
-                                    child: Image.network(
-                                        widget.data["product_image"]),
+                        ? Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 15, 0, 0),
+                          child: Container(
+                              height: ht / 8,
+                              width: wd,
+                              color: const Color(0xffF7F7F7),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Card(
+                                    shape: const CircleBorder(),
+                                    elevation: 10,
+                                    child: Container(
+                                      clipBehavior: Clip.hardEdge,
+                                      decoration: const BoxDecoration(
+                                          shape: BoxShape.circle),
+                                      width: ht / 10,
+                                      child: Image.network(
+                                          widget.data["product_image"]),
+                                    ),
                                   ),
-                                ),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        widget.data["product_name"],
-                                        style: const TextStyle(
-                                            color: Color(0xff5C5C5C),
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 18),
-                                      ),
-                                      Padding(
-                                        padding: EdgeInsets.symmetric(
-                                            vertical: wd / 50),
-                                        child: Text(
-                                            widget.data["product_summary"],
-                                            maxLines: 2,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: const TextStyle(
-                                                color: Color(0xff7E7D7D),
-                                                fontSize: 12)),
-                                      ),
-                                    ],
-                                  ),
-                                )
-                              ],
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          widget.data["product_name"],
+                                          style: const TextStyle(
+                                              color: Color(0xff5C5C5C),
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 18),
+                                        ),
+                                        Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: wd / 50),
+                                          child: Text(
+                                              widget.data["product_summary"],
+                                              maxLines: 2,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: const TextStyle(
+                                                  color: Color(0xff7E7D7D),
+                                                  fontSize: 12)),
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                ],
+                              ),
                             ),
-                          )
+                        )
                         : SizedBox(
                             width: wd,
                             child: GestureDetector(
@@ -264,7 +286,6 @@ class _CheckoutPageState extends State<CheckoutPage> {
                               ),
                             ),
                           ),
-
                     Padding(
                       padding: const EdgeInsets.all(18.0),
                       child: Container(
@@ -413,9 +434,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                 ),
               ),
             ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Padding(
+             Padding(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10),
                 child: ServiceButton(
@@ -443,13 +462,13 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                   c.addressID.value,
                                   widget.data['product_id'],
                                   widget.data["unit_name"],
-                                  widget.data['unit_values_id'],
+                                  widget.unit_values_id.toString(),
                                   c.sqft.value,
                                   c.dateSelected.value,
                                   c.dateSelected.value,
                                   paymentModeCode,
                                   c.timeSlot.value,
-                                  c.timeSlot.value,
+                                  c.totime.value,
                                   c.mobile.value,
                                   c.email.value)
                               .then((value) {
@@ -518,7 +537,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                       }
                     }),
               ),
-            )
+
           ],
         ),
       ),

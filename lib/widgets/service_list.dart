@@ -73,7 +73,9 @@ class _ServiceListState extends State<ServiceList> {
               Get.close(1);
             });
             bottomSheet(
-                context, value["data"][0], slots);
+                context, value["data"][0], slots,
+                isBoth: true,
+            );
           }),
           child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -236,7 +238,7 @@ class _ServiceListState extends State<ServiceList> {
                                               visible:
                                                   widget.bookingScreen ?? false,
                                               child: Text(
-                                                "${widget.data["data"][widget.index]["quantity"].toString()} ${widget.data["data"][widget.index]["unit_name"].toString()}",
+                                                "₹${widget.data["data"][widget.index]["price"].toString()} ",
                                                 style: const TextStyle(
                                                     fontSize: 14,
                                                     color: Color(0xff38456C),
@@ -280,7 +282,8 @@ class _ServiceListState extends State<ServiceList> {
                                           Get.close(1);
                                         });
                                         bottomSheet(
-                                            context, value["data"][0], slots);
+                                            context, value["data"][0], slots,isCart: false
+                                        );
                                       }),
                                       child: const Text(
                                         "BOOK",
@@ -292,6 +295,7 @@ class _ServiceListState extends State<ServiceList> {
                                     ),
                                   ),
                                 ),
+
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Visibility(
@@ -314,22 +318,41 @@ class _ServiceListState extends State<ServiceList> {
                               ],
                             ),
                           ),
-                          Visibility(
-                            visible: widget.activeBooking == true ? true : false,
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 18.0, vertical: 5),
-                              child: Text(
-                                widget.data["data"][widget.index]["service_date"]
-                                    .toString(),
-                                style: TextStyle(
-                                    color:
+                          Row(
+                            children: [
+                              Visibility(
+                                  visible:
+                                  widget.bookingScreen ?? false,
+                                  child: Text(
+                                    "${widget.data["data"][widget.index]["unit_name"].toString()} - ${widget.data["data"][widget.index]["dispval"].toString()} ",
+                                    style: const TextStyle(
+                                        fontSize: 15,
+                                        color: Color(0xff38456C),
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              SizedBox(width: 20),
+                              Visibility(
+                                visible: widget.activeBooking == true ? true : false,
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 18.0, vertical: 5),
+                                  child: Text(
+                                    widget.data["data"][widget.index]["service_date"]
+                                        .toString(),
+                                    style: TextStyle(
+                                        color:
                                         widget.color ?? const Color(0xff1FD0C2),
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold),
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
                               ),
-                            ),
-                          )
+                            ],
+                          ),
+
+
+
                         ],
                       ),
                     )

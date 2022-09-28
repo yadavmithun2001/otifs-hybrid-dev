@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:stellar_track/api_calls.dart';
 import 'package:stellar_track/widgets/shimmer_loader.dart';
 
+import '../controllers.dart';
+import '../main.dart';
 import '../widgets/bottom_nav.dart';
 import '../widgets/carousel.dart';
 import 'Main Screens/home_page.dart';
@@ -15,6 +19,7 @@ class About extends StatefulWidget {
 
 class _AboutState extends State<About> {
   dynamic aboutData;
+  final Controller c = Get.put(Controller());
   @override
   void initState() {
     super.initState();
@@ -86,10 +91,18 @@ class _AboutState extends State<About> {
                       ),
                       Padding(
                         padding: const EdgeInsets.all(18.0),
-                        child: Image.asset(
-                          "assets/AppBarCall.png",
-                          width: wd / 10,
-                          height: 20,
+                        child: GestureDetector(
+                          onTap: (){
+                            c.screenIndex.value = 1;
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen()
+                            )
+                            );
+                          },
+                          child: Image.asset(
+                            "assets/AppBarCall.png",
+                            width: wd / 10,
+                            height: 20,
+                          ),
                         ),
                       ),
                     ],

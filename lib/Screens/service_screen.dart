@@ -90,12 +90,8 @@ class _ServiceScreenState extends State<ServiceScreen> {
             actions: [
               GestureDetector(
                 onTap: () {
-                  Get.to(CartScreen(
-                    isBottomNav: false,
-                    mainCatId: widget.mainCatID,
-                    subCatId: widget.subCatID,
-                    mainCatImage: widget.mainCatImage,
-                  ));
+                  c.screenIndex.value = 2;
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen()));
                 },
                 child: Padding(
                   padding: EdgeInsets.all(wd / 20),
@@ -175,19 +171,27 @@ class _ServiceScreenState extends State<ServiceScreen> {
                                 Padding(
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 18.0),
-                                  child: Image.asset(
-                                    "assets/AppBarCall.png",
-                                    width: 20,
+                                  child: GestureDetector(
+                                    onTap: (){
+                                      c.screenIndex.value = 1;
+                                      Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen()
+                                      )
+                                      );
+                                    },
+                                    child: Image.asset(
+                                      "assets/AppBarCall.png",
+                                      width: 20,
+                                    ),
                                   ),
                                 ),
-                                const Padding(
+                               /* const Padding(
                                   padding:
                                       EdgeInsets.symmetric(horizontal: 18.0),
                                   child: Icon(
                                     Icons.bookmark,
                                     size: 20,
                                   ),
-                                ),
+                                ), */
                               ],
                             ),
                           ),

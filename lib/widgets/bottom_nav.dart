@@ -1,6 +1,7 @@
 import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:stellar_track/api_calls.dart';
 import 'package:stellar_track/main.dart';
 
 import '../controllers.dart';
@@ -13,7 +14,19 @@ class BottomNavigation extends StatefulWidget {
 }
 
 class _BottomNavigationState extends State<BottomNavigation> {
-  final Controller c = Get.put(Controller());
+   Controller c = Get.put(Controller());
+  String cart_count = '0';
+  @override
+  void initState() {
+    // TODO: implement initState
+    getCartItems(c.refUserId.value).then((value) {
+      setState(() {
+        c.cartCount.value = value["data"][0]["cart_count"];
+      });
+    });
+
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     var wd = MediaQuery.of(context).size.width;
@@ -78,7 +91,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
                         ignorePointer: true,
                         badgeColor: Color(0xff1FD0C2),
                         badgeContent: Text(
-                          "${c.cartCount.value.toString()}",
+                         c.cartCount.value.toString(),
                           style: TextStyle(fontSize: 14, color: Colors.white),
                         ),
                         child: Image.asset(
@@ -114,4 +127,6 @@ class _BottomNavigationState extends State<BottomNavigation> {
       ),
     );
   }
+
+
 }

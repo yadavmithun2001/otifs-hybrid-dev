@@ -45,6 +45,7 @@ dependencies:
   google_fonts: ^3.0.1
   url_launcher: ^6.1.5
   flutter_shimmer: ^2.1.2
+  dotted_border: ^2.0.0+2
   get: ^4.6.5
   get_storage:
   badges: ^2.0.3

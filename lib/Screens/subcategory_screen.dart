@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:stellar_track/Screens/service_screen.dart';
 import 'package:stellar_track/api_calls.dart';
 import 'package:stellar_track/widgets/shimmer_loader.dart';
+
+import '../controllers.dart';
+import '../main.dart';
 
 class SubcategoriesScreen extends StatefulWidget {
   const SubcategoriesScreen({required this.categoryId, Key? key})
@@ -12,6 +17,7 @@ class SubcategoriesScreen extends StatefulWidget {
 }
 
 class _SubcategoriesScreenState extends State<SubcategoriesScreen> {
+  Controller c = Get.put(Controller());
   @override
   void initState() {
     // TODO: implement initState
@@ -110,19 +116,27 @@ class _SubcategoriesScreenState extends State<SubcategoriesScreen> {
                           Padding(
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 18.0),
-                            child: Image.asset(
-                              "assets/AppBarCall.png",
-                              // width: 30,
-                              height: 20,
+                            child: GestureDetector(
+                              onTap: (){
+                                c.screenIndex.value = 1;
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen()
+                                )
+                                );
+                              },
+                              child: Image.asset(
+                                "assets/AppBarCall.png",
+                                // width: 30,
+                                height: 20,
+                              ),
                             ),
                           ),
-                          const Padding(
+                         /* const Padding(
                             padding: EdgeInsets.symmetric(horizontal: 18.0),
                             child: Icon(
                               Icons.bookmark,
                               size: 20,
                             ),
-                          ),
+                          ), */
                         ],
                       ),
                     ),

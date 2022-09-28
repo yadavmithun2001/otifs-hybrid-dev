@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:stellar_track/Screens/checkout_page.dart';
 import 'package:stellar_track/Screens/service_screen.dart';
 import 'package:stellar_track/api_calls.dart';
@@ -14,6 +15,8 @@ import 'package:stellar_track/widgets/time_slot_selection.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import '../../controllers.dart';
 import '../../main.dart';
+import '../../widgets/date_slot_selection.dart';
+import '../../widgets/day_slots.dart';
 import '../../widgets/trigger_signin.dart';
 import 'home_page.dart';
 
@@ -36,16 +39,46 @@ class CartScreen extends StatefulWidget {
 
 class _CartScreenState extends State<CartScreen> {
   dynamic data;
+  String? updated_price = '';
+  TextEditingController textEditingController =
+  TextEditingController(text: '0');
   @override
   void initState() {
+
+    c.currentDateSelected.value = '0';
+    c.dateSelected.value = (DateTime.parse(c.date.value)
+        .add(Duration(days: 0))
+        .toString()
+        .split('-')[0] +
+        '-' +
+        DateTime.parse(c.date.value)
+            .add(Duration(days: 0))
+            .toString()
+            .split('-')[1] +
+        '-' +
+        DateTime.parse(c.date.value)
+            .add(Duration(days: 0))
+            .toString()
+            .split('-')[2]
+            .split(' ')
+            .first);
+
     getCartItems(c.refUserId.value).then((value) {
       setState(() {
         data = value;
+        textEditingController.text = value["data"][0]["quantity"];
       });
     });
+
     super.initState();
   }
 
+  int index = 0;
+
+  final Controller c = Get.put(Controller());
+  String updated_qunatity = "1";
+  final RefreshController _refreshController =
+      RefreshController(initialRefresh: false);
   onRefresh() {
     getCartItems(c.refUserId.value).then((value) {
       setState(() {
@@ -53,15 +86,6 @@ class _CartScreenState extends State<CartScreen> {
       });
     }).then((value) => _refreshController.refreshCompleted());
   }
-
-  int index = 0;
-  TextEditingController textEditingController =
-      TextEditingController(text: '0');
-  final Controller c = Get.put(Controller());
-  // final Controller c = Get.put(Controller());
-  final RefreshController _refreshController =
-      RefreshController(initialRefresh: false);
-
   @override
   Widget build(BuildContext context) {
     final double ht = MediaQuery.of(context).size.height;
@@ -89,8 +113,10 @@ class _CartScreenState extends State<CartScreen> {
                             //             mainCatImage: widget.mainCatImage)))
                             : Get.to(CheckoutPage(
                                 data: data,
+                                unit_values_id: data[""],
                                 isCart: true,
                                 isBottomNav: true,
+                               total_amount: "0",
                               ));
                       } else {
                         data['response']['message'] == 'Data not available'
@@ -101,8 +127,10 @@ class _CartScreenState extends State<CartScreen> {
                               )
                             : Get.to(CheckoutPage(
                                 data: data,
+                                unit_values_id: 0,
                                 isCart: true,
                                 isBottomNav: true,
+                                total_amount: "0",
                               ));
                       }
                     },
@@ -180,10 +208,16 @@ class _CartScreenState extends State<CartScreen> {
                                           ),
                                           Padding(
                                             padding: const EdgeInsets.all(18.0),
-                                            child: Image.asset(
-                                              "assets/AppBarCall.png",
-                                              width: wd / 10,
-                                              height: 20,
+                                            child: GestureDetector(
+                                              onTap: (){
+                                                c.screenIndex.value = 1;
+                                                Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen()));
+                                              },
+                                              child: Image.asset(
+                                                "assets/AppBarCall.png",
+                                                width: wd / 10,
+                                                height: 20,
+                                              ),
                                             ),
                                           ),
                                         ],
@@ -224,36 +258,35 @@ class _CartScreenState extends State<CartScreen> {
                                             itemBuilder: (context, index) {
                                               return CartItemListTile(
                                                 data: data,
+                                                updated_price: updated_price!,
                                                 index: index,
                                                 refresh: () {
                                                   onRefresh();
                                                 },
                                                 areaFunction: () async {
-                                                  await addUnitsDialog(
-                                                    '',
-                                                          context,
-                                                          ht,
-                                                          wd,
-                                                          textEditingController,
-                                                          c,
-                                                          setState)
+                                                  data == null;
+                                                  updateCart(index,
+                                                      '', context,
+                                                      ht,
+                                                      wd,
+                                                      textEditingController,
+                                                      setState)
                                                       .then((value) async {
                                                     await addItemToCart(
                                                         c.refUserId.value,
                                                         data['data'][index]
-                                                            ['product_id'],
+                                                        ['product_id'],
                                                         data['data'][index]
-                                                            ['unit_id'],
-                                                        qty: c.sqft.value,
+                                                        ['unit_id'],
+                                                        qty: textEditingController.text.toString(),
                                                         date: null,
                                                         fromTime: null,
                                                         toTime: null);
-
                                                     setState(() {
                                                       c.sqft.value = '';
                                                     });
-                                                  });
-                                                  onRefresh();
+                                                   onRefresh();
+                                                 });
                                                 },
                                                 scheduleFunction: () async {
                                                   await getTimeSlots(
@@ -270,26 +303,49 @@ class _CartScreenState extends State<CartScreen> {
                                                     }, builder: (context) {
                                                       dynamic date;
                                                       return Column(
+                                                        mainAxisAlignment: MainAxisAlignment.start,
                                                         children: [
-                                                          SfDateRangePicker(
-                                                            onSelectionChanged:
-                                                                (dateRangePickerSelectionChangedArgs) {
-                                                              date =
-                                                                  dateRangePickerSelectionChangedArgs
-                                                                      .value;
-                                                            },
-                                                          ),
+                                                           Row(
+                                                             mainAxisAlignment: MainAxisAlignment.start,
+
+                                                             children: [
+                                                               Padding(
+                                                                    padding: const EdgeInsets.all(2.0),
+                                                                    child: Container(
+                                                                      // height: 30,
+                                                                      child: ElevatedButton(
+                                                                        onPressed: () => Navigator.of(context).pop(),
+                                                                        style: ButtonStyle(
+                                                                            backgroundColor:
+                                                                            MaterialStateProperty.all(Colors.white),
+                                                                            shape:
+                                                                            MaterialStateProperty.all(const CircleBorder()),
+                                                                            elevation: MaterialStateProperty.all(5)),
+                                                                        child: const Icon(
+                                                                          Icons.arrow_back,
+                                                                          size: 20,
+                                                                          color: Colors.black,
+                                                                        ),
+                                                                      ),
+                                                                      decoration: const BoxDecoration(
+                                                                          shape: BoxShape.circle, color: Colors.white),
+                                                                    ),
+                                                                  ),
+                                                             ],
+                                                           ),
+                                                            SizedBox(height: 50),
+                                                          _dateSelection(),
+                                                          SizedBox(height: 20),
                                                           TimeSlotsSelection(
                                                               slots: value),
+                                                          SizedBox(height: 20),
                                                           ServiceButton(
                                                             buttonText:
                                                                 'Proceed',
                                                             onTap: () async {
-                                                            
 
                                                               await addItemToCart(
-                                                                      c
-                                                                          .refUserId,
+                                                                      c.refUserId,
                                                                       data['data']
                                                                               [index]
                                                                           [
@@ -299,16 +355,12 @@ class _CartScreenState extends State<CartScreen> {
                                                                           [
                                                                           'unit_id'],
                                                                       qty: null,
-                                                                      date: date
-                                                                          .toString()
-                                                                          .split(
-                                                                              ' ')
-                                                                          .first,
+                                                                      date: c.dateSelected.value,
                                                                       fromTime: c
                                                                           .timeSlot
                                                                           .value,
                                                                       toTime:
-                                                                          null
+                                                                          c.totime.value
                                                                       // null,
                                                                       // date
                                                                       //     .toString()
@@ -321,21 +373,15 @@ class _CartScreenState extends State<CartScreen> {
                                                                       )
                                                                   .then(
                                                                       (value) {
-                                                                if (widget
-                                                                        .isBottomNav ==
-                                                                    true) {
-                                                                  setState(() {
-                                                                    c.screenIndex
-                                                                        .value = 0;
-                                                                  });
-                                                                } else {
+
+                                                                  c.screenIndex.value ==2;
                                                                   Navigator.pushReplacement(
                                                                       context,
                                                                       MaterialPageRoute(
-                                                                          builder: (context) =>
-                                                                              const HomeScreen()));
-                                                                }
+                                                                          builder: (context) => HomeScreen()));
+
                                                               });
+                                                              Navigator.pop(context);
                                                             },
                                                             color: const Color
                                                                     .fromARGB(
@@ -344,14 +390,17 @@ class _CartScreenState extends State<CartScreen> {
                                                         ],
                                                       );
                                                     })).then((value) {
+
                                                       setState(() {
                                                         c.timeSlot.value = '';
                                                         c.currentTimeSelected
                                                             .value = '';
+
                                                       });
                                                       onRefresh();
                                                     });
                                                   });
+
                                                 },
                                               );
                                             }),
@@ -363,6 +412,228 @@ class _CartScreenState extends State<CartScreen> {
       ),
     );
   }
+
+  updatedetails(int index){
+
+    getCartItems(c.refUserId.value).then((value) {
+      setState(() {
+        data = value;
+      });
+    });
+
+  }
+
+  updateCart(int index,String unit,
+      context, ht, wd,textEditingController, setState) async {
+    Controller c = Get.put(Controller());
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(
+            builder: (context, setState) => Dialog(
+              child: Container(
+                height: ht / 4,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Enter Quantity",
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600),
+                    ),
+                    SizedBox(
+                      width: wd,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          GestureDetector(
+                            onTap: (() {
+                              var value =
+                                  int.parse(textEditingController.text) + 1;
+                              setState(
+                                    () {
+                                  textEditingController.text = value.toString();
+                                },
+                              );
+                            }),
+                            child: Card(
+                              shape: const CircleBorder(),
+                              child: RotatedBox(
+                                quarterTurns: 1,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Image.asset(
+                                    "assets/icons/icons_png/027-arrow.png",
+                                    height: 12,
+                                    width: 12,
+                                    fit: BoxFit.cover,
+                                    color: const Color(0xff1FD0C2),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                              height: ht / 12,
+                              width: wd / 3,
+                              child: TextFormField(
+                                // initialValue: "0",
+                                textAlign: TextAlign.center,
+                                controller: textEditingController,
+                                keyboardType: TextInputType.number,
+                                 onChanged: (value){
+                                  setState((){
+                                   textEditingController.text = value.toString();
+                                  });
+                                 },
+                                 onEditingComplete: () {
+                                   setState((() {
+                                     c.sqft.value = textEditingController
+                                         .text
+                                         .toString();
+                                   }));
+                                 },
+                              )),
+                          GestureDetector(
+                            onTap: (() {
+                              var value = int.parse(textEditingController.text) - 1;
+                              setState(
+                                    () {
+                                  textEditingController.text = value.toString();
+                                },
+                              );
+                            }),
+                            child: Card(
+                              shape: const CircleBorder(),
+                              child: RotatedBox(
+                                quarterTurns: 3,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Image.asset(
+                                    "assets/icons/icons_png/027-arrow.png",
+                                    height: 12,
+                                    width: 12,
+                                    fit: BoxFit.cover,
+                                    color: const Color(0xff1FD0C2),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    ServiceButton(
+                      buttonText: "OK",
+                      width: wd / 4,
+                      height: ht / 20,
+                      fontSize: 14,
+                      onTap: () {
+                         setState(() {
+                           c.sqft.value = textEditingController.text.toString();
+                           getCartItems(c.refUserId.value).then((value) {
+                             setState(() {
+                               data = value;
+                               updatedetails(index);
+                               Get.back();
+                             });
+                           });
+                         });
+                      },
+                    )
+                  ],
+                ),
+              ),
+            ),
+          );
+        }).then((value) {
+      setState() {
+        c.sqft.value = '1';
+      }
+
+      ;
+    });
+  }
+
+  Widget _dateSelection(){
+    return SizedBox(
+      height: 48,
+      child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          shrinkWrap: true,
+          itemCount: 4,
+          // itemExtent: 40,
+          itemBuilder: (context, index) {
+
+            var weekday = int.parse(DateTime.parse(c.date.value)
+                .add(Duration(days: index))
+                .weekday
+                .toString());
+
+            var day;
+
+            if (weekday <= 6) {
+              day = int.parse(DateTime.parse(c.date.value)
+                  .add(Duration(days: index))
+                  .weekday
+                  .toString());
+            } else {
+              day = 0;
+            }
+
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Obx(
+                    () => GestureDetector(
+                    onTap: (() async {
+                      List<String> date;
+                      String dateSelected;
+                      c.currentDateSelected.value = index.toString();
+                      date = c.date.value.toString().split('-');
+
+                      dateSelected = (DateTime.parse(c.date.value)
+                          .add(Duration(days: index))
+                          .toString()
+                          .split('-')[0] +
+                          '-' +
+                          DateTime.parse(c.date.value)
+                              .add(Duration(days: index))
+                              .toString()
+                              .split('-')[1] +
+                          '-' +
+                          DateTime.parse(c.date.value)
+                              .add(Duration(days: index))
+                              .toString()
+                              .split('-')[2]
+                              .split(' ')
+                              .first);
+                      setState(() {
+                        c.dateSelected.value = dateSelected;
+                      });
+
+
+                    }),
+                    child: DaySlots(
+                      weekday: day.toString(),
+                      date: DateTime.parse(c.date.value)
+                          .add(Duration(days: index))
+                          .toString()
+                          .split('-')[2]
+                          .split(' ')
+                          .first,
+                      selected: c.currentDateSelected.value == index.toString()
+                          ? true
+                          : false,
+                    )
+                ),
+              ),
+            );
+          }),
+    );
+  }
+
 }
 
 class CartItemListTile extends StatefulWidget {
@@ -372,25 +643,68 @@ class CartItemListTile extends StatefulWidget {
       this.refresh,
       required this.areaFunction,
       required this.scheduleFunction,
-      key})
+      key, required this.updated_price})
       : super(key: key);
   final dynamic data;
   final int index;
+  final String updated_price;
   final dynamic areaFunction;
   final dynamic scheduleFunction;
   final dynamic refresh;
+
   @override
   State<CartItemListTile> createState() => _CartItemListTileState();
 }
 
 class _CartItemListTileState extends State<CartItemListTile> {
   TextEditingController textEditingController =
-      TextEditingController(text: '0');
+      TextEditingController(text: '1');
   final Controller c = Get.put(Controller());
+  String initial_price = '';
+  dynamic data;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    textEditingController.text = widget.data["data"][widget.index]['quantity'];
+    getUpdatedPrice(widget.data["data"][widget.index]['product_id'],widget.data["data"][widget.index]['unit_id'],widget.data["data"][widget.index]['quantity']).then((value) {
+      setState(() {
+        initial_price = value["data"]["total_amount"].toString();
+      });
+    });
+    super.initState();
+  }
+
+  updatedetails(int index){
+    getCartItems(c.refUserId.value).then((value) {
+      setState(() {
+        data = value;
+        Get.back();
+        getUpdatedPrice(widget.data["data"][widget.index]['product_id'],widget.data["data"][widget.index]['unit_id'],textEditingController.text.toString()).then((value) {
+          setState(() {
+            initial_price = value["data"]["total_amount"].toString();
+          });
+        });
+
+        addItemToCart(
+            c.refUserId,
+            widget.data["data"][widget.index]['product_id'],
+            widget.data["data"][widget.index]['unit_id'],
+            qty: textEditingController.text)
+            .then((value) {
+          Get.close(1);
+        });
+
+      });
+    });
+  }
+
+
   @override
   Widget build(BuildContext context) {
     // final double ht = MediaQuery.of(context).size.height;
     final double wd = MediaQuery.of(context).size.width;
+    final double ht = MediaQuery.of(context).size.height;
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: SizedBox(
@@ -495,9 +809,7 @@ class _CartItemListTileState extends State<CartItemListTile> {
                           Padding(
                             padding: const EdgeInsets.only(right: 8.0),
                             child: Text(
-                              '₹' +
-                                  widget.data['data'][widget.index]['price']
-                                      .toString(),
+                              '₹'+ initial_price,
                               style: const TextStyle(
                                   color: Color(0xff38456C),
                                   fontSize: 17,
@@ -506,20 +818,144 @@ class _CartItemListTileState extends State<CartItemListTile> {
                           )
                         ],
                       ),
-                      const SizedBox(
-                        height: 20,
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 15),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'Quantity',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Color(0xff5C5C5C),
+                                fontWeight: FontWeight.bold
+                              ),
+                            ),
+                            Expanded(child: SizedBox()),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                GestureDetector(
+                                  onTap: (() {
+                                    var value =
+                                        int.parse(textEditingController.text) - 1;
+                                    setState(
+                                          () {
+                                        textEditingController.text = value.toString();
+                                        c.sqft.value = value.toString();
+                                        updatedetails(widget.index);
+                                        _updatedetails(widget.index);
+                                      },
+                                    );
+                                  }),
+                                  child: const Card(
+                                    shape: CircleBorder(),
+                                    child: Padding(
+                                      padding: EdgeInsets.fromLTRB(0, 0, 0, 15),
+                                      child: Icon(
+                                          Icons.minimize_sharp
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                    height: ht / 16,
+                                    width: wd / 8,
+                                    child: TextFormField(
+                                      // initialValue: "0",
+                                      textAlign: TextAlign.center,
+                                      controller: textEditingController,
+                                      keyboardType: TextInputType.number,
+                                      decoration: InputDecoration(
+                                        border: InputBorder.none
+                                      ),
+                                      onEditingComplete: () {
+                                        setState((() {
+                                          c.sqft.value = textEditingController
+                                              .text
+                                              .toString();
+                                          updatedetails(widget.index);
+
+                                        }));
+                                      },
+                                    )),
+                                GestureDetector(
+                                  onTap: (() {
+                                    var value =
+                                        int.parse(textEditingController.text) + 1;
+                                    setState(
+                                          () {
+                                        textEditingController.text = value.toString();
+                                        c.sqft.value = value.toString();
+                                        updatedetails(widget.index);
+                                        _updatedetails(widget.index);
+                                      },
+                                    );
+                                  }),
+                                  child: const Card(
+                                    shape: CircleBorder(),
+                                    child: RotatedBox(
+                                      quarterTurns: 3,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(0),
+                                        child: Icon(
+                                            Icons.add
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            )
+                          ],
+                        ),
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           GestureDetector(
                               onTap: () {
-                                widget.areaFunction();
+
                               },
-                              child: CartItemAreawidget(
-                                data: widget.data,
-                                index: widget.index,
-                              )),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: const Color(0xff1FD0C2),
+                                    ),
+                                    borderRadius: BorderRadius.circular(10)),
+                                width: 150,
+                                height: 41,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      widget.data['data'][widget.index]['unit_name'].toString(),
+                                      style: TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w900,
+                                          color: Color(0xff5C5C5C)),
+                                    ),
+                                    Text(
+                                      widget.data['data'][widget.index]['dispval'].toString(),
+                                      style: TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w900,
+                                          color: Color(0xff5C5C5C)),
+                                    ),
+                                   /* Text(
+                                        "Quantity - "+widget.data['data'][widget.index]['quantity']
+                                        //  c.sqft.value
+                                        ,
+                                        style: const TextStyle(
+                                            fontSize: 12,
+                                            color: Color(0xff7E7D7D),
+                                            fontWeight: FontWeight.normal)
+                                    ), */
+                                  ],
+                                ),
+                              )
+                          ),
                           const SizedBox(
                             width: 10,
                           ),
@@ -544,9 +980,17 @@ class _CartItemListTileState extends State<CartItemListTile> {
       ),
     );
   }
+
+  _updatedetails(int index){
+    getUpdatedPrice(widget.data["product_id"], widget.data['data'][index]['unit_id'].toString(),textEditingController.text.toString()).then((value) {
+      setState(() {
+        initial_price = value["data"]["total_amount"].toString();
+      });
+    });
+  }
 }
 
-class CartItemAreawidget extends StatelessWidget {
+class CartItemAreawidget extends StatefulWidget {
   const CartItemAreawidget({
     required this.data,
     required this.index,
@@ -554,40 +998,55 @@ class CartItemAreawidget extends StatelessWidget {
   }) : super(key: key);
   final dynamic data;
   final dynamic index;
+
+  @override
+  State<CartItemAreawidget> createState() => _CartItemAreawidgetState();
+}
+
+class _CartItemAreawidgetState extends State<CartItemAreawidget> {
+
+  TextEditingController textEditingController = TextEditingController(text: '1');
+  final Controller c = Get.put(Controller());
+
+  dynamic data;
+
   @override
   Widget build(BuildContext context) {
-    // final Controller c = Get.put(Controller());
+
     return Container(
       decoration: BoxDecoration(
           border: Border.all(
             color: const Color(0xff1FD0C2),
           ),
           borderRadius: BorderRadius.circular(10)),
-      width: 121,
-      height: 38,
+      width: 150,
+      height: 41,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          const Text(
-            'Total Sq Feet',
+           Text(
+             widget.data['data'][widget.index]['unit_name'].toString()+" - "+widget.data['data'][widget.index]['dispval'].toString(),
             style: TextStyle(
-                fontSize: 14,
+                fontSize: 12,
                 fontWeight: FontWeight.w900,
                 color: Color(0xff5C5C5C)),
           ),
           Text(
-              data['data'][index]['quantity'] ?? 'Select area'
+              "Quantity - "+widget.data['data'][widget.index]['quantity']
               //  c.sqft.value
               ,
               style: const TextStyle(
-                  fontSize: 10,
+                  fontSize: 12,
                   color: Color(0xff7E7D7D),
-                  fontWeight: FontWeight.normal)),
+                  fontWeight: FontWeight.normal)
+          ),
         ],
       ),
     );
   }
+
+
 }
 
 class CartItemScheduleWidget extends StatelessWidget {
@@ -604,11 +1063,11 @@ class CartItemScheduleWidget extends StatelessWidget {
             color: const Color(0xff1FD0C2),
           ),
           borderRadius: BorderRadius.circular(10)),
-      width: 121,
-      height: 38,
+      width: 150,
+      height: 41,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           const Text(
             'Schedule',
@@ -627,3 +1086,5 @@ class CartItemScheduleWidget extends StatelessWidget {
     );
   }
 }
+
+

@@ -10,10 +10,11 @@ class Controller extends GetxController {
   RxString addressID = ''.obs;
   RxString defaultAddressId = ''.obs;
   RxMap<String, String> coordinates = {"lat": "", "lng": ""}.obs;
-  RxString addressType = 'H'.obs;
+  RxString addressType = 'C'.obs;
   RxString sqft = ''.obs;
   RxString dateSelected = ''.obs;
   RxString timeSlot = ''.obs;
+  RxString totime = ''.obs;
   RxString currentTimeSelected = ''.obs;
   RxString currentDateSelected = ''.obs;
   RxString date = "".obs;
@@ -23,6 +24,7 @@ class Controller extends GetxController {
   RxString selected_quantity = ''.obs;
   RxString updated_price = ''.obs;
   RxInt cartCount = 0.obs;
+  RxString bookorcart = ''.obs;
   RxMap<String, String> allServicesMap = {"": ""}.obs;
   RxBool reload = false.obs;
   RxList<String> paymentMethods = <String>[].obs;

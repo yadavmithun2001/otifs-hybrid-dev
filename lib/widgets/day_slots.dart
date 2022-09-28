@@ -1,3 +1,4 @@
+import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -26,23 +27,29 @@ class _DaySlotsState extends State<DaySlots> {
     return SizedBox(
       // height: 48,
       width: 48,
-      child: Container(
-          child: Center(
-            child: Text(
-              "${widget.date}\n ${weekdayMap[widget.weekday]}",
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 14, color: Color(0xff7E7D7D)),
+      child: DottedBorder(
+        color:  widget.selected == true
+            ? const Color(0xff1FD0C2)
+            : const Color(0xffE5E5E5),
+        strokeWidth: 2,
+        dashPattern: widget.selected == true ?
+        [10,0] : [10,3],
+        radius: Radius.circular(10),
+        borderType: BorderType.RRect,
+        child: Container(
+            child: Center(
+              child: Text(
+                "${widget.date}\n ${weekdayMap[widget.weekday]}",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 14, color: Color(0xff7E7D7D)),
+              ),
             ),
-          ),
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              color: Colors.white,
-              border: Border.all(
-                width: 2,
-                color: widget.selected == true
-                    ? const Color(0xff1FD0C2)
-                    : const Color(0xffE5E5E5),
-              ))),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Colors.white,
+            )
+        ),
+      ),
     );
   }
 }

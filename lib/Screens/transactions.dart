@@ -8,6 +8,7 @@ import 'package:stellar_track/api_calls.dart';
 import 'package:stellar_track/widgets/shimmer_loader.dart';
 
 import '../controllers.dart';
+import '../main.dart';
 import '../widgets/active_bookings.dart';
 import '../widgets/booking_history.dart';
 import '../widgets/carousel.dart';
@@ -94,10 +95,18 @@ class _TransactionsState extends State<Transactions> {
                             ),
                             Padding(
                               padding: const EdgeInsets.all(18.0),
-                              child: Image.asset(
-                                "assets/AppBarCall.png",
-                                width: wd / 10,
-                                height: 20,
+                              child: GestureDetector(
+                                onTap: (){
+                                  c.screenIndex.value = 1;
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen()
+                                  )
+                                  );
+                                },
+                                child: Image.asset(
+                                  "assets/AppBarCall.png",
+                                  width: wd / 10,
+                                  height: 20,
+                                ),
                               ),
                             ),
                           ],

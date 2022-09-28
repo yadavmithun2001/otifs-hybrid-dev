@@ -64,10 +64,16 @@ class _BookingListsScreenState extends State<BookingListsScreen>
                               ),
                               Padding(
                                 padding: const EdgeInsets.all(18.0),
-                                child: Image.asset(
-                                  "assets/AppBarCall.png",
-                                  width: wd / 10,
-                                  height: 20,
+                                child: GestureDetector(
+                                  onTap: (){
+                                    c.screenIndex.value = 1;
+                                    Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen()));
+                                  },
+                                  child: Image.asset(
+                                    "assets/AppBarCall.png",
+                                    width: wd / 10,
+                                    height: 20,
+                                  ),
                                 ),
                               ),
                             ],

@@ -43,7 +43,8 @@ class _SplashScreenState extends State<SplashScreen> {
         width: wd,
         child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20.0),
-            child: Logo(ht: ht)),
+            child: Logo(ht: ht)
+        ),
       ),
       nextScreen: getStorage.read('refUserId') == null
           ? const SignUpScreen()

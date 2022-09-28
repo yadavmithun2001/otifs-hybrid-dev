@@ -5,6 +5,7 @@ import 'package:stellar_track/widgets/mobile_field.dart';
 import 'package:stellar_track/widgets/shimmer_loader.dart';
 
 import '../controllers.dart';
+import '../main.dart';
 import '../widgets/carousel.dart';
 import 'Main Screens/home_page.dart';
 
@@ -87,10 +88,18 @@ class _TransferAccountState extends State<TransferAccount> {
                         ),
                         Padding(
                           padding: const EdgeInsets.all(18.0),
-                          child: Image.asset(
-                            "assets/AppBarCall.png",
-                            width: wd / 10,
-                            height: 20,
+                          child: GestureDetector(
+                            onTap: (){
+                              c.screenIndex.value = 1;
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen()
+                              )
+                              );
+                            },
+                            child: Image.asset(
+                              "assets/AppBarCall.png",
+                              width: wd / 10,
+                              height: 20,
+                            ),
                           ),
                         ),
                       ],

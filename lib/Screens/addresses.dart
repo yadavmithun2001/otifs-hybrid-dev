@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:stellar_track/Screens/add_address_screen.dart';
 import 'package:stellar_track/api_calls.dart';
 import 'package:stellar_track/widgets/add_new_address.dart';
 import 'package:stellar_track/widgets/shimmer_loader.dart';
 
 import '../controllers.dart';
+import '../main.dart';
 import '../widgets/carousel.dart';
 import 'Main Screens/home_page.dart';
 
@@ -80,18 +82,30 @@ class _AddressesState extends State<Addresses> {
                     padding: EdgeInsets.symmetric(horizontal: wd / 18.0),
                     child: Row(
                       children: [
-                        Image.asset(
-                          "assets/icons/icons_png/004-headphones.png",
-                          color: const Color(0xff38456C),
-                          width: wd / 10,
-                          height: 20,
+                        GestureDetector(
+                          onTap:(){
+                            c.screenIndex.value = 1;
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen()
+                            )
+                            );
+                          },
+                          child: Image.asset(
+                            "assets/icons/icons_png/004-headphones.png",
+                            color: const Color(0xff38456C),
+                            width: wd / 10,
+                            height: 20,
+                          ),
                         ),
                         SizedBox(
                           width: wd / 17,
                         ),
                         GestureDetector(
                           onTap: () {
-                            Get.dialog(const AddNewAddress());
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                    const AddAddress()));
                           },
                           child: Image.asset(
                             "assets/icons/icons_png/064-plus.png",
@@ -105,8 +119,11 @@ class _AddressesState extends State<Addresses> {
                   ),
                 ],
               ),
-              addresseslist == null
-                  ? Center(child: ShimmerLoader(height: 60, width: wd))
+              addresseslist["status"] == "failure"
+                  ? Center(child: Text(
+                  'No address found!'
+                 )
+              )
                   : SizedBox(
                       height: ht / 1.5,
                       child: ListView.builder(
