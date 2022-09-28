@@ -189,28 +189,8 @@ class _ServiceListState extends State<ServiceList> {
                                   width: wd / 2,
                                   child: Row(
                                     mainAxisAlignment:
-                                        MainAxisAlignment.spaceAround,
+                                        MainAxisAlignment.start,
                                     children: [
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 5.0),
-                                        child: Column(
-                                          children: [
-                                            Image.asset(
-                                              "assets/time.png",
-                                              width: wd / 12,
-                                            ),
-                                            Text(
-                                              widget.data["data"][widget.index]
-                                                  ["service_time"],
-                                              style: const TextStyle(
-                                                  fontSize: 16,
-                                                  color: Color(0xff38456C),
-                                                  fontWeight: FontWeight.bold),
-                                            )
-                                          ],
-                                        ),
-                                      ),
                                       Padding(
                                         padding: const EdgeInsets.symmetric(
                                             horizontal: 0.0),
@@ -319,19 +299,20 @@ class _ServiceListState extends State<ServiceList> {
                             ),
                           ),
                           Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               Visibility(
                                   visible:
                                   widget.bookingScreen ?? false,
                                   child: Text(
-                                    "${widget.data["data"][widget.index]["unit_name"].toString()} - ${widget.data["data"][widget.index]["dispval"].toString()} ",
+                                    "${widget.data["data"][widget.index]["unit_name"].toString()}- ${widget.data["data"][widget.index]["dispval"].toString()} ",
                                     style: const TextStyle(
-                                        fontSize: 15,
+                                        fontSize: 14,
                                         color: Color(0xff38456C),
                                         fontWeight: FontWeight.bold),
                                   ),
                                 ),
-                              SizedBox(width: 20),
+
                               Visibility(
                                 visible: widget.activeBooking == true ? true : false,
                                 child: Padding(
@@ -343,7 +324,7 @@ class _ServiceListState extends State<ServiceList> {
                                     style: TextStyle(
                                         color:
                                         widget.color ?? const Color(0xff1FD0C2),
-                                        fontSize: 14,
+                                        fontSize: 13,
                                         fontWeight: FontWeight.bold),
                                   ),
                                 ),

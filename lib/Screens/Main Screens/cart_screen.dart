@@ -679,10 +679,10 @@ class _CartItemListTileState extends State<CartItemListTile> {
     getCartItems(c.refUserId.value).then((value) {
       setState(() {
         data = value;
-        Get.back();
         getUpdatedPrice(widget.data["data"][widget.index]['product_id'],widget.data["data"][widget.index]['unit_id'],textEditingController.text.toString()).then((value) {
           setState(() {
             initial_price = value["data"]["total_amount"].toString();
+
           });
         });
 
@@ -692,7 +692,7 @@ class _CartItemListTileState extends State<CartItemListTile> {
             widget.data["data"][widget.index]['unit_id'],
             qty: textEditingController.text)
             .then((value) {
-          Get.close(1);
+
         });
 
       });
@@ -923,7 +923,7 @@ class _CartItemListTileState extends State<CartItemListTile> {
                                       color: const Color(0xff1FD0C2),
                                     ),
                                     borderRadius: BorderRadius.circular(10)),
-                                width: 150,
+                                width: 120,
                                 height: 41,
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -1063,7 +1063,7 @@ class CartItemScheduleWidget extends StatelessWidget {
             color: const Color(0xff1FD0C2),
           ),
           borderRadius: BorderRadius.circular(10)),
-      width: 150,
+      width: 130,
       height: 41,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,

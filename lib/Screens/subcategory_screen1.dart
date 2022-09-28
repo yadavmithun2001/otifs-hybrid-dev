@@ -259,7 +259,7 @@ class _SubCategoryListItem1State extends State<SubCategoryListItem1> {
                                   .toString(),
                               style: const TextStyle(
                                   color: Color(0xff5C5C5C),
-                                  fontSize: 16,
+                                  fontSize: 15,
                                 fontWeight: FontWeight.bold
                               ),
                             ),
@@ -291,7 +291,7 @@ class _SubCategoryListItem1State extends State<SubCategoryListItem1> {
                           .toString(),
                       style: const TextStyle(
                           color: Color(0xff7E7D7D),
-                          fontSize: 14,
+                          fontSize: 12,
                           fontWeight: FontWeight.bold),
                       maxLines: 3,
                     ),

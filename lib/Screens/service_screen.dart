@@ -91,7 +91,8 @@ class _ServiceScreenState extends State<ServiceScreen> {
               GestureDetector(
                 onTap: () {
                   c.screenIndex.value = 2;
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen()));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen()
+                  ));
                 },
                 child: Padding(
                   padding: EdgeInsets.all(wd / 20),

@@ -30,6 +30,7 @@ class SelectTimeandDate extends StatefulWidget {
 class _SelectTimeandDateState extends State<SelectTimeandDate> {
 
   final Controller c = Get.put(Controller());
+  late ScrollController _scrollController;
   dynamic unit_data;
   String? selected = "";
   int? selected_unit_id = 0;
@@ -43,6 +44,7 @@ class _SelectTimeandDateState extends State<SelectTimeandDate> {
 
   @override
   void initState() {
+    _scrollController = ScrollController();
     getUnitDetails(widget.data["product_id"], widget.data["unit_name"]).then((value) {
       setState(() {
         unit_data = value;
@@ -88,6 +90,7 @@ class _SelectTimeandDateState extends State<SelectTimeandDate> {
                     width: wd,
                     color: const Color(0xffF7F7F7),
                     child: SingleChildScrollView(
+                      controller: _scrollController,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -123,9 +126,9 @@ class _SelectTimeandDateState extends State<SelectTimeandDate> {
                               ),
                           Padding(
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 8.0, vertical: 5),
+                                horizontal: 10, vertical: 5),
                             child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
                                     widget.data["product_name"]
@@ -135,6 +138,21 @@ class _SelectTimeandDateState extends State<SelectTimeandDate> {
                                         fontSize: 20,
                                         fontWeight: FontWeight.bold),
                                   ),
+                                
+                                GestureDetector(
+                                  onTap: (){
+                                    _scrollController.animateTo(500,
+                                        duration: const Duration(milliseconds: 500),
+                                        curve: Curves.easeInOut);
+                                  },
+                                  child: Row(
+                                    children:const[
+                                      Text("View Details"),
+                                      Icon(Icons.arrow_right)
+                                    ],
+                                  ),
+                                ),
+
 
                                 /* Padding(
                                   padding: const EdgeInsets.symmetric(
@@ -629,7 +647,34 @@ class _SelectTimeandDateState extends State<SelectTimeandDate> {
                                   fontSize: 16,
                                   buttonText: "Add to cart"),
                             ),
+                          ),
+
+                          const Padding(
+                            padding: EdgeInsets.fromLTRB(15, 15, 15, 5),
+                            child: Align(
+                              alignment: Alignment.topLeft,
+                                child: Text(
+                                    'Product Description :',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold
+                                  ),
+                                )
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(15, 0, 15, 20),
+                            child: Align(
+                              alignment: Alignment.topLeft,
+                              child: Text(
+                                  widget.data["product_summary"].toString(),
+                                style: TextStyle(
+                                  fontSize: 15
+                                ),
+                              ),
+                            ),
                           )
+
                         ],
                       ),
                     ),

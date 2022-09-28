@@ -1,16 +1,22 @@
 import 'package:flutter/material.dart';
 
-class Logo extends StatelessWidget {
+class Logo extends StatefulWidget {
   const Logo({required this.ht, Key? key}) : super(key: key);
   final double ht;
+
+  @override
+  State<Logo> createState() => _LogoState();
+}
+
+class _LogoState extends State<Logo> {
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         Container(
-          height: ht / 4,
-          width: ht / 8,
+          height: widget.ht / 4,
+          width: widget.ht / 8,
           decoration: BoxDecoration(
               color: Colors.white, borderRadius: BorderRadius.circular(20)),
           child: const Center(
@@ -23,13 +29,17 @@ class Logo extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(
+        Align(
+          alignment: Alignment.center,
           child: Text("Happy to Serve,\nAlways",
-              style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 28,
-                  color: Colors.white)),
-        )
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 26,
+                      color: Colors.white)
+            ),
+        ),
+
+
       ],
     );
   }

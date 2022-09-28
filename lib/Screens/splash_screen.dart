@@ -38,13 +38,10 @@ class _SplashScreenState extends State<SplashScreen> {
     return AnimatedSplashScreen(
       backgroundColor: const Color(0xff38456C),
       duration: 2500,
-      splash: SizedBox(
-        height: ht,
-        width: wd,
-        child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0),
-            child: Logo(ht: ht)
-        ),
+      splashIconSize: ht/8,
+      splash: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15.0),
+              child: Logo(ht: ht)
       ),
       nextScreen: getStorage.read('refUserId') == null
           ? const SignUpScreen()

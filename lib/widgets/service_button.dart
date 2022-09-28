@@ -45,7 +45,8 @@ class _ServiceButtonState extends State<ServiceButton> {
                   borderRadius: BorderRadius.circular(40))),
               side: MaterialStateProperty.all(
                   const BorderSide(color: Color(0xff1FD0C2), width: 2)),
-              backgroundColor: MaterialStateProperty.all(Colors.white)),
+              backgroundColor: MaterialStateProperty.all(Colors.white)
+          ),
         ),
       ),
     );

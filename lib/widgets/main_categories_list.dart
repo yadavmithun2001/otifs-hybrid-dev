@@ -79,7 +79,6 @@ class _MainCategoriesListState extends State<MainCategoriesList> {
                                       textAlign: TextAlign.center,
                                       style: const TextStyle(
                                           color: Color(0xff5C5C5C)),
-                                      maxLines: 2,
                                     ),
                                   ),
                                 )

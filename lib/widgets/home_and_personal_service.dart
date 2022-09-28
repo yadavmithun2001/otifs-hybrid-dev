@@ -49,8 +49,6 @@ class _HomeAndPersonalServiceState extends State<HomeAndPersonalService> {
     }
   }
 
-  
-
   @override
   Widget build(BuildContext context) {
     var wd = MediaQuery.of(context).size.width;
@@ -66,13 +64,13 @@ class _HomeAndPersonalServiceState extends State<HomeAndPersonalService> {
                 ? Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Container(
-                      color: Colors.transparent,
+                      color: widget.color,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Padding(
                             padding:
-                                const EdgeInsets.symmetric(horizontal: 18.0),
+                                const EdgeInsets.symmetric(horizontal: 18.0,vertical: 10),
                             child: Text(
                               mainAndSubCategories[index].name,
                               style: const TextStyle(
@@ -130,8 +128,8 @@ class _HomeAndPersonalServiceState extends State<HomeAndPersonalService> {
                                             color: Colors.transparent,
                                             elevation: 0,
                                             child: SizedBox(
-                                              height: wd / 3.5,
-                                              width: wd / 3.5,
+                                              height: wd / 4,
+                                              width: wd / 4,
                                               child: Image.network(
                                                 mainAndSubCategories[index]
                                                         .subCategories[count]

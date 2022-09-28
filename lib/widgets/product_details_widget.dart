@@ -198,30 +198,9 @@ class _ProductDetailsWidgetState extends State<ProductDetailsWidget> {
                                         width: wd / 1.75,
                                         child: Row(
                                           mainAxisAlignment:
-                                              MainAxisAlignment.spaceEvenly,
+                                              MainAxisAlignment.end,
                                           children: [
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 5.0),
-                                              child: Row(
-                                                children: [
-                                                  Image.asset(
-                                                    "assets/time.png",
-                                                    width: wd / 12,
-                                                  ),
-                                                  Text(
-                                                    widget.data["service_time"],
-                                                    style: const TextStyle(
-                                                        fontSize: 12,
-                                                        color:
-                                                            Color(0xff38456C),
-                                                        fontWeight:
-                                                            FontWeight.bold),
-                                                  )
-                                                ],
-                                              ),
-                                            ),
+
                                             Padding(
                                               padding: EdgeInsets.symmetric(
                                                   horizontal: wd / 80),
@@ -234,7 +213,7 @@ class _ProductDetailsWidgetState extends State<ProductDetailsWidget> {
                                                   Text(
                                                     '₹'+widget.data['sell_price'].toString(),
                                                     style: const TextStyle(
-                                                        fontSize: 12,
+                                                        fontSize: 16,
                                                         color:
                                                             Color(0xff38456C),
                                                         fontWeight:
@@ -367,14 +346,27 @@ class _ProductDetailsWidgetState extends State<ProductDetailsWidget> {
             children: [
               Padding(
                 padding: const EdgeInsets.fromLTRB(0, 0, 15, 0),
-                child: ServiceButton(
-                    onTap: () {
+                child: SizedBox(
+                  width: wd / 2.5,
+                  height: 50,
+                  child: ElevatedButton(
+                    onPressed: () {
                       Navigator.pop(context);
                     },
-                    width: wd / 2.5,
-                    color: const Color(0xff38456C),
-                    fontSize: 16,
-                    buttonText: "CANCEL"),
+                    child: const Text(
+                      "CANCEL",
+                      style: TextStyle(
+                          color: Colors.white, fontSize: 16),
+                    ),
+                    style: ButtonStyle(
+                        shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(40))),
+                        side: MaterialStateProperty.all(
+                            const BorderSide(color: Colors.red, width: 2)),
+                        backgroundColor: MaterialStateProperty.all(Colors.red)
+                    ),
+                  ),
+                ),
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
